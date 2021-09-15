@@ -14,7 +14,7 @@ It works on Windows and Linux.
 
 # WHY ???
 
-I'm too lazy to explain in details right now, but if you encountered the same frustrating issues than me regarding multi-threading and non blocking IPC on PHP 8.x CLI under Windows and Linux, and if the single idea of trying to think about installing the Microsoft PHP for Windows toolchain in the hope of compiling all you need yourself on Windows gives you nosea and instestinal transit issues, you might find this library useful or inspiring ...
+I'm too lazy to explain in details right now, but if you encountered the same frustrating issues than me regarding multi-threading and non blocking IPC on PHP 8.x CLI under Windows and Linux, and if the single idea of trying to think about installing the Microsoft PHP for Windows toolchain in the hope of compiling all you need yourself on Windows gives you nausea and instestinal transit issues, you might find this library useful or inspiring ...
 
 # HOW ???
 
