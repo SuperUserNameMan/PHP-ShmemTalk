@@ -6,7 +6,7 @@ PHP8.x synchronized shared-memory array that can be used as IPC between two PHP 
 
 This class allows two PHP 8.x processes to communicate using a synchronized shared memory array.
 
-The main PHP process uses this class to launches a separate background PHP process.
+The main PHP process uses this class to launch a separate background PHP process.
 
 A php array is synchronized between the two and allow them to talk the way you want.
 
