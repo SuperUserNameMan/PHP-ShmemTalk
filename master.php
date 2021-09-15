@@ -1,6 +1,6 @@
 <?php
 
-echo "Worker PID : ".getmypid().PHP_EOL;
+echo "Master PID : ".getmypid().PHP_EOL;
 
 
 require_once("include/ShmemTalk.php");
