@@ -270,7 +270,7 @@ class ShmemTalk
 		
 		$we_received_the_update = false ;
 		
-		if ( sem_acquire( $this->sem_access , self::BLOCKING ) )
+		if ( sem_acquire( $this->sem_access , self::NON_BLOCKING ) )
 		{
 			$INDEX_THE_OTHER_WROTE_SOMETHING = $this->is_master ? self::INDEX_WORKER_WROTE_SOMETHING : self::INDEX_MASTER_WROTE_SOMETHING ;
 
