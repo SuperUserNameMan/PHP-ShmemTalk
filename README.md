@@ -8,7 +8,7 @@ This class allows two PHP 8.x processes to communicate using a synchronized shar
 
 The main PHP process uses this class to launch a separate background PHP process.
 
-A php array is synchronized between the two and allow them to talk the way you want.
+A php array is synchronized between the two and allow them to talk to each other the way you want.
 
 It works on Windows and Linux.
 
