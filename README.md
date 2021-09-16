@@ -25,4 +25,4 @@ I'm too lazy to explain in details right now, but if you encountered the same fr
 
 # OTHER EXAMPLES ???
 
-https://github.com/SuperUserNameMan/STB-php-ffi
+- There is one usage example here too : https://github.com/SuperUserNameMan/STB-php-ffi
