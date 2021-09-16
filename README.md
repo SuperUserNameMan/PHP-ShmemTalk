@@ -21,3 +21,8 @@ I'm too lazy to explain in details right now, but if you encountered the same fr
 - on Windows, the API of the misssing extension `sysvsem` is emulated using [PHP-Win32-Semaphore](https://github.com/SuperUserNameMan/PHP-Win32-Semaphore) which itself requires extension `FFI` to bind to the required Win32 API ;
 - `popen` is used to launch background child PHP process ;
 - a non blocking synchronizsation mechanism allows them to exchange data through a PHP array ;
+
+
+# OTHER EXAMPLES ???
+
+https://github.com/SuperUserNameMan/STB-php-ffi
