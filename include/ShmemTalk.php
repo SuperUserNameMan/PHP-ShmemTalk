@@ -320,6 +320,38 @@ class ShmemTalk
 		return $this->data[ $key ] ?? null ;
 	}
 
+	public function Inc( $key ) : ShmemTalk
+	{
+		$this->data[ $key ]++;
+		$this->data_needs_to_be_sent = true ;
+
+		return $this;
+	}
+
+	public function Dec( $key ) : ShmemTalk
+	{
+		$this->data[ $key ]--;
+		$this->data_needs_to_be_sent = true ;
+
+		return $this;
+	}
+
+	public function Add( $key , $val ) : ShmemTalk
+	{
+		$this->data[ $key ] += $val ;
+		$this->data_needs_to_be_sent = true ;
+
+		return $this;
+	}
+
+	public function Mul( $key , $val ) : ShmemTalk
+	{
+		$this->data[ $key ] *= $val ;
+		$this->data_needs_to_be_sent = true ;
+
+		return $this;
+	}
+
 	public function Close()
 	{
 		if ( $this->is_master )
