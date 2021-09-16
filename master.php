@@ -45,3 +45,5 @@ $worker->Set( 0 , "quit" , true )->Synch(true);
 echo "Closing worker ...";
 $worker->Close();
 echo "Ok".PHP_EOL;
+
+//EOF

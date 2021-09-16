@@ -362,6 +362,7 @@ class ShmemTalk
 	{
 		if ( PHP_OS_FAMILY == 'Windows' )
 		{
+			// TODO FIXME : try to use Win32 API instead using FFI
 			exec( "tasklist /FI \"PID eq $pid\"" , $_res );
 			return count( $_res ) > 1 ;
 		}
@@ -380,3 +381,5 @@ class ShmemTalk
 	}
 
 };
+
+//EOF
