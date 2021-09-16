@@ -46,7 +46,7 @@ class ShmemTalk
 	
 // ----- PUBLIC API ----------------------------------------
 
-	/// Master constructor : ShmemeTalk( "./worker.php" );
+	/// Master constructor : ShmemTalk( "./worker.php" );
 	///
 	/// Worker constructor : ShmemTalk();
 	///
@@ -259,7 +259,7 @@ class ShmemTalk
 	/// This function has to be called in the main loops of each process.
 	/// It synchronizes the data array using the shared memory.
 	/// And it reset the WatchDog Timer of the worker.
-	public function Synch() : bool
+	public function Synch( bool $blocking = false ) : bool
 	{
 		if ( $this->is_worker )
 		{
@@ -270,7 +270,7 @@ class ShmemTalk
 		
 		$we_received_the_update = false ;
 		
-		if ( sem_acquire( $this->sem_access , self::NON_BLOCKING ) )
+		if ( sem_acquire( $this->sem_access , $blocking ? self::BLOCKING : self::NON_BLOCKING ) )
 		{
 			$INDEX_THE_OTHER_WROTE_SOMETHING = $this->is_master ? self::INDEX_WORKER_WROTE_SOMETHING : self::INDEX_MASTER_WROTE_SOMETHING ;
 
@@ -307,10 +307,12 @@ class ShmemTalk
 	}
 	
 
-	public function Set( $key , $val )
+	public function Set( $key , $val ) : ShmemTalk
 	{
 		$this->data[ $key ] = $val ;
 		$this->data_needs_to_be_sent = true ;
+
+		return $this;
 	}
 	
 	public function Get( $key ) : mixed

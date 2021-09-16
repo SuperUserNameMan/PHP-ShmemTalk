@@ -29,7 +29,7 @@ while( $tend > microtime( true ) )
 
 		if ( $rep !== null )
 		{
-//			file_put_contents( "worker_synch.".time().".txt", print_r( $rep , true ) );
+			//file_put_contents( "worker_synch.".time().".txt", print_r( $rep , true ) );
 			switch( $rep )
 			{ 
 				case "quit" : file_put_contents( "worker_quit.".time().".txt", "".time() ); exit( $rep );

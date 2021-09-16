@@ -1,6 +1,6 @@
 <?php
 
-echo "Master PID : ".getmypid().PHP_EOL;
+echo "Worker PID : ".getmypid().PHP_EOL;
 
 
 require_once("include/ShmemTalk.php");
@@ -35,10 +35,11 @@ while( $tend > microtime( true ) )
 	}
 }
 
-echo "IPC : ".($count/10.0)." Hz".PHP_EOL; 
+echo "IPC : ".($count/10.0)." Hz".PHP_EOL; // ~10 kHz max Linux
 
 echo "Quit signal @".time().PHP_EOL;
-$worker->Set( 0 , "quit" , true ); //usleep( 1000 );
+
+$worker->Set( 0 , "quit" , true )->Synch(true); 
 
 
 echo "Closing worker ...";
