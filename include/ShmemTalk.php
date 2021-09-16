@@ -39,7 +39,7 @@ class ShmemTalk
 	
 	
 	public array $data = [] ; 
-	public bool  $data_needs_to_be_sent = false;
+
 	public array $changes = [];
 
 
@@ -274,6 +274,7 @@ class ShmemTalk
 		if ( sem_acquire( $this->sem_access , $blocking ? self::BLOCKING : self::NON_BLOCKING ) )
 		{
 			$INDEX_THE_OTHER_WROTE_SOMETHING = $this->is_master ? self::INDEX_WORKER_WROTE_SOMETHING : self::INDEX_MASTER_WROTE_SOMETHING ;
+			$INDEX_WE_WROTE_SOMETHING        = $this->is_master ? self::INDEX_MASTER_WROTE_SOMETHING : self::INDEX_WORKER_WROTE_SOMETHING ;
 
 			if ( shm_get_var( $this->shmem , $INDEX_THE_OTHER_WROTE_SOMETHING ) )
 			{
@@ -281,21 +282,21 @@ class ShmemTalk
 				$_updates = shm_get_var( $this->shmem , self::INDEX_SHARED_DATA );
 
 				$this->data = array_replace( $this->data , $_updates );
-				
+
 				$we_received_the_update = true ;
 			}
 
-			if ( $this->data_needs_to_be_sent )
+			if ( ! empty( $this->changes ) )
 			{
-				//echo "shm_put_var".PHP_EOL; 
 				shm_put_var( $this->shmem , self::INDEX_SHARED_DATA , $this->changes );
-				$this->changes = [];
-				$this->data_needs_to_be_sent = false ;
-				
-				$INDEX_WE_WROTE_SOMETHING = $this->is_master ? self::INDEX_MASTER_WROTE_SOMETHING : self::INDEX_WORKER_WROTE_SOMETHING ;
-				shm_put_var( $this->shmem , $INDEX_WE_WROTE_SOMETHING , true );
+
+				if ( ! shm_get_var( $this->shmem , $INDEX_WE_WROTE_SOMETHING ) )
+				{
+					shm_put_var( $this->shmem , $INDEX_WE_WROTE_SOMETHING , true );
+					$this->changes = [];
+				}
 			}
-			
+						
 			// Tell the other end we're finished reading their update  :
 			if ( $we_received_the_update )
 			{
@@ -308,27 +309,23 @@ class ShmemTalk
 		return $we_received_the_update;
 	}
 	
+	public function Get( $key ) : mixed
+	{
+		return $this->data[ $key ] ?? null ;
+	}
 
 	public function Set( $key , $val ) : ShmemTalk
 	{
 		$this->data[ $key ] = $val ;
 		$this->changes[ $key ] = $val ;
 
-		$this->data_needs_to_be_sent = true ;
-
 		return $this;
 	}
 	
-	public function Get( $key ) : mixed
-	{
-		return $this->data[ $key ] ?? null ;
-	}
-
 	public function Inc( $key ) : ShmemTalk
 	{
 		$this->data[ $key ]++;
 		$this->changes[ $key ] = $this->data[ $key ];
-		$this->data_needs_to_be_sent = true ;
 
 		return $this;
 	}
@@ -337,7 +334,6 @@ class ShmemTalk
 	{
 		$this->data[ $key ]--;
 		$this->changes[ $key ] = $this->data[ $key ];
-		$this->data_needs_to_be_sent = true ;
 
 		return $this;
 	}
@@ -346,7 +342,6 @@ class ShmemTalk
 	{
 		$this->data[ $key ] += $val ;
 		$this->changes[ $key ] = $this->data[ $key ];
-		$this->data_needs_to_be_sent = true ;
 
 		return $this;
 	}
@@ -355,7 +350,6 @@ class ShmemTalk
 	{
 		$this->data[ $key ] *= $val ;
 		$this->changes[ $key ] = $this->data[ $key ];
-		$this->data_needs_to_be_sent = true ;
 
 		return $this;
 	}
