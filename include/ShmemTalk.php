@@ -40,7 +40,7 @@ class ShmemTalk
 	
 	public array $data = [] ; 
 	public bool  $data_needs_to_be_sent = false;
-	public array $chenges = [];
+	public array $changes = [];
 
 
 
