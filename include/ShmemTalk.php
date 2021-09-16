@@ -40,6 +40,7 @@ class ShmemTalk
 	
 	public array $data = [] ; 
 	public bool  $data_needs_to_be_sent = false;
+	public array $chenges = [];
 
 
 
@@ -277,9 +278,9 @@ class ShmemTalk
 			if ( shm_get_var( $this->shmem , $INDEX_THE_OTHER_WROTE_SOMETHING ) )
 			{
 				//echo "shm_get_var".PHP_EOL;
-				$_data = shm_get_var( $this->shmem , self::INDEX_SHARED_DATA );
+				$_updates = shm_get_var( $this->shmem , self::INDEX_SHARED_DATA );
 
-				$this->data = array_replace( $this->data , $_data );
+				$this->data = array_replace( $this->data , $_updates );
 				
 				$we_received_the_update = true ;
 			}
@@ -287,7 +288,8 @@ class ShmemTalk
 			if ( $this->data_needs_to_be_sent )
 			{
 				//echo "shm_put_var".PHP_EOL; 
-				shm_put_var( $this->shmem , self::INDEX_SHARED_DATA , $this->data );
+				shm_put_var( $this->shmem , self::INDEX_SHARED_DATA , $this->changes );
+				$this->changes = [];
 				$this->data_needs_to_be_sent = false ;
 				
 				$INDEX_WE_WROTE_SOMETHING = $this->is_master ? self::INDEX_MASTER_WROTE_SOMETHING : self::INDEX_WORKER_WROTE_SOMETHING ;
@@ -310,6 +312,8 @@ class ShmemTalk
 	public function Set( $key , $val ) : ShmemTalk
 	{
 		$this->data[ $key ] = $val ;
+		$this->changes[ $key ] = $val ;
+
 		$this->data_needs_to_be_sent = true ;
 
 		return $this;
@@ -323,6 +327,7 @@ class ShmemTalk
 	public function Inc( $key ) : ShmemTalk
 	{
 		$this->data[ $key ]++;
+		$this->changes[ $key ] = $this->data[ $key ];
 		$this->data_needs_to_be_sent = true ;
 
 		return $this;
@@ -331,6 +336,7 @@ class ShmemTalk
 	public function Dec( $key ) : ShmemTalk
 	{
 		$this->data[ $key ]--;
+		$this->changes[ $key ] = $this->data[ $key ];
 		$this->data_needs_to_be_sent = true ;
 
 		return $this;
@@ -339,6 +345,7 @@ class ShmemTalk
 	public function Add( $key , $val ) : ShmemTalk
 	{
 		$this->data[ $key ] += $val ;
+		$this->changes[ $key ] = $this->data[ $key ];
 		$this->data_needs_to_be_sent = true ;
 
 		return $this;
@@ -347,6 +354,7 @@ class ShmemTalk
 	public function Mul( $key , $val ) : ShmemTalk
 	{
 		$this->data[ $key ] *= $val ;
+		$this->changes[ $key ] = $this->data[ $key ];
 		$this->data_needs_to_be_sent = true ;
 
 		return $this;
