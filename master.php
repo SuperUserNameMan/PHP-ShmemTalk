@@ -39,7 +39,7 @@ echo "IPC : ".($count/10.0)." Hz".PHP_EOL; // ~10 kHz max Linux
 
 echo "Quit signal @".time().PHP_EOL;
 
-$worker->Set( 0 , "quit" , true )->Synch(true); 
+$worker->Set( 0 , "quit" )->Synch(true); 
 
 
 echo "Closing worker ...";
