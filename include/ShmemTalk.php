@@ -391,14 +391,27 @@ class ShmemTalk
 
 		return ftok( $_instance_tmp , $project_id );
 	}
+	
+	private $win32 = null;
 
 	private function this_process_is_alive( $pid ) : bool
 	{
 		if ( PHP_OS_FAMILY == 'Windows' )
 		{
-			// TODO FIXME : try to use Win32 API instead using FFI
-			exec( "tasklist /FI \"PID eq $pid\"" , $_res );
-			return count( $_res ) > 1 ;
+			if ( $this->win32 === null )
+			{
+				$this->win32 = FFI::cdef(''
+						.'void * OpenProcess( unsigned long desiredAccess , int inheritHandle , unsigned long pid );'.PHP_EOL
+						.'unsigned long WaitForSingleObject( void* handle , unsigned long timeout_ms );'.PHP_EOL
+						.'int CloseHandle( void* handle );'.PHP_EOL
+				,'kernel32.dll');
+			}
+			
+			$_proc = $this->win32->OpenProcess( 0x00100000 , 0 , $pid );
+			$_ret  = $this->win32->WaitForSingleObject( $_proc , 0 );
+			$this->win32->CloseHandle( $_proc );
+			
+			return $_ret == 0x00000102 ;
 		}
 
 		return file_exists( "/proc/$pid" );
